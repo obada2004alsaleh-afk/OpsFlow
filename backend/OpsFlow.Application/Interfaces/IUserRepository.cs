@@ -6,5 +6,13 @@ namespace OpsFlow.Application.Interfaces
     {
         Task<User?> GetByEmailAsync(string email);
 
+        Task AddAsync(User user);
+
+        Task<List<User>> GetAllAsync();
+        Task SaveChangesAsync();
+
+        Task<User?> GetByUserIdAsync(int UserId);
+
+
     }
 }

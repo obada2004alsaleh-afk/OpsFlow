@@ -1,17 +1,26 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using OpsFlow.Application.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using OpsFlow.Application.Authentication.Login;
+using OpsFlow.Application.Interfaces;
+using OpsFlow.Application.Users.CreateUser;
 using OpsFlow.Infrastructure.Database;
 using OpsFlow.Infrastructure.Repositories;
 using OpsFlow.Infrastructure.Security;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-
+using OpsFlow.Application.Users.GetUsers;
+using OpsFlow.Application.Users.UpdateUser;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
 builder.Services.AddScoped<LoginUseCase>();
+builder.Services.AddScoped<CreateUserUseCase>();
+builder.Services.AddScoped<GetAllUsersUseCase>();
+builder.Services.AddScoped<UpdateUserUseCase>();
+
+
+builder.Services.AddControllers();
 
 var jwtSecretKey = builder.Configuration["Jwt:SecretKey"];
 
@@ -55,9 +64,12 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
 //model binding loginRequest from the request body and injecting LoginUseCase from DI container
 app.MapPost("/api/auth/login",
     async (LoginRequest loginRequest, LoginUseCase loginUseCase) =>
@@ -71,6 +83,7 @@ app.MapPost("/api/auth/login",
 
         return Results.Ok(loginResponse);
     });
+
 
 
 app.Run();
