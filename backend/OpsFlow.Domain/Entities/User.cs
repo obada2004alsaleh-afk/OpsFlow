@@ -1,4 +1,5 @@
 ﻿
+
 namespace OpsFlow.Domain.Entities
 {
     public class User
@@ -18,10 +19,15 @@ namespace OpsFlow.Domain.Entities
         public DateTime CreatedAt { get; set; }
 
         public required string Role { get; set; }
- 
+
         public bool IsActive { get; set; }
 
         public int? CustomerId { get; set; }
+        public Customer? Customer { get; set; } //navigation property to Customer entity
+
+
+
+
 
     }
 }

@@ -1,10 +1,10 @@
-﻿using OpsFlow.Application.Interfaces;
+﻿
+using OpsFlow.Application.Interfaces;
 using OpsFlow.Application.Role;
 using OpsFlow.Application.Users.SharedResponse;
 
 namespace OpsFlow.Application.Users.UpdateUser
 {
-
     public class UpdateUserUseCase
     {
         private readonly IUserRepository _userRepository;
@@ -14,44 +14,61 @@ namespace OpsFlow.Application.Users.UpdateUser
             _userRepository = userRepository;
         }
 
-        public async Task<UserResponse> ExecuteAsync(int UserId, UpdateUserRequest request)
+        public async Task<UserResponse> ExecuteAsync(
+            int userId,
+            UpdateUserRequest request)
         {
-
-            var user = await _userRepository.GetByUserIdAsync(UserId);
-
+            var user = await _userRepository.GetByUserIdAsync(userId);
 
             if (user == null)
             {
                 throw new KeyNotFoundException("User not found");
             }
 
-
-
-
+            // Validate email uniqueness
             if (request.Email != null && request.Email != user.Email)
             {
-                var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+                var existingUser =
+                    await _userRepository.GetByEmailAsync(request.Email);
+
                 if (existingUser != null)
                 {
-                    throw new InvalidOperationException("Email already exists");
+                    throw new InvalidOperationException(
+                        "Email already exists");
                 }
-
             }
 
+            // Validate role and protect Customer relationship
             if (request.Role != null)
             {
-                if (request.Role != UserRoles.Admin && request.Role != UserRoles.Technician && request.Role != UserRoles.Manager)
+                if (request.Role != UserRoles.Admin &&
+                    request.Role != UserRoles.Manager &&
+                    request.Role != UserRoles.Technician &&
+                    request.Role != UserRoles.Customer)
                 {
-                    throw new ArgumentException(
-                 "Role must be Admin, Manager, or Technician.");
+                    throw new ArgumentException("Invalid role.");
                 }
 
+                bool wasCustomer =
+                    user.Role == UserRoles.Customer;
+
+                bool willBeCustomer =
+                    request.Role == UserRoles.Customer;
+
+                if (wasCustomer != willBeCustomer)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot change between Customer and internal roles.");
+                }
             }
-            if(request.Email != null)
+
+            // Apply updates after validation
+            if (request.Email != null)
             {
                 user.Email = request.Email;
             }
-            if (request.Role !=null)
+
+            if (request.Role != null)
             {
                 user.Role = request.Role;
             }
@@ -65,19 +82,16 @@ namespace OpsFlow.Application.Users.UpdateUser
             {
                 user.LastName = request.LastName;
             }
+
             if (request.Phone != null)
             {
                 user.Phone = request.Phone;
             }
 
-
-            if (request.IsActive != null)
+            if (request.IsActive.HasValue)
             {
                 user.IsActive = request.IsActive.Value;
             }
-
-
-
 
             await _userRepository.SaveChangesAsync();
 
@@ -90,12 +104,9 @@ namespace OpsFlow.Application.Users.UpdateUser
                 Phone = user.Phone,
                 Role = user.Role,
                 IsActive = user.IsActive,
-                CreatedAt = user.CreatedAt
-
-
+                CreatedAt = user.CreatedAt,
+                CustomerId = user.CustomerId
             };
-
         }
-
     }
 }

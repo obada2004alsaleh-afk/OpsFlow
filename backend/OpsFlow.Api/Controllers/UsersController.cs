@@ -39,7 +39,7 @@ namespace OpsFlow.Api.Controllers
         {
             try
             {
-                var response = await _createUserUseCase.ExecuteAsync(request);
+              var response = await _createUserUseCase.ExecuteAsync(request);
 
                 return StatusCode(201, response);
             }
@@ -50,6 +50,10 @@ namespace OpsFlow.Api.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
 
         }

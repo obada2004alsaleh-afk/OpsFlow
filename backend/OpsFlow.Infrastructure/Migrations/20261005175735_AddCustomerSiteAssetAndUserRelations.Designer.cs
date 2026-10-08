@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OpsFlow.Infrastructure.Database;
 
 #nullable disable
 
-namespace OpsFlow.Infrastructure.Persistence.Migrations
+namespace OpsFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(OpsFlowDbContext))]
-    partial class OpsFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261005175735_AddCustomerSiteAssetAndUserRelations")]
+    partial class AddCustomerSiteAssetAndUserRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +83,6 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("CustomerId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Customers");
                 });

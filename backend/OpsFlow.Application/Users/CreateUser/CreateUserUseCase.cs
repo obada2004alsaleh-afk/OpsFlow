@@ -9,10 +9,12 @@ namespace OpsFlow.Application.Users.CreateUser
     {
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserRepository _userRepository;
-        public CreateUserUseCase(IUserRepository userRepository,IPasswordHasher passwordHasher)
+        private readonly ICustomerRepository _customerRepository;
+        public CreateUserUseCase(IUserRepository userRepository, IPasswordHasher passwordHasher, ICustomerRepository customerRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _customerRepository = customerRepository;
         }
 
         public async Task<UserResponse> ExecuteAsync(CreateUserRequest request)
@@ -21,15 +23,50 @@ namespace OpsFlow.Application.Users.CreateUser
 
             if (existingUser != null)
             {
-            throw new  InvalidOperationException(
-                 "A user with this email already exists.");
-            }
-            if(request.Role != UserRoles.Admin && request.Role != UserRoles.Manager && request.Role != UserRoles.Technician)
-            {
-                throw new ArgumentException("Invalid role. Role must be Admin, Manager, or Technician.");
+                throw new InvalidOperationException(
+                     "A user with this email already exists.");
             }
 
-             var hashedPassword = _passwordHasher.HashPassword(request.Password);
+            if (request.Role != UserRoles.Admin && request.Role != UserRoles.Manager && request.Role != UserRoles.Technician && request.Role != UserRoles.Customer)
+            {
+                throw new ArgumentException("Invalid role. Role must be Admin, Manager, Technician, or Customer.");
+            }
+            if (request.Role == UserRoles.Customer)
+            {
+
+                if (!request.CustomerId.HasValue)
+                {
+                    throw new ArgumentException(
+                        "CustomerId is required for Customer users.");
+                }
+                if (request.CustomerId.Value <= 0)
+                {
+                    throw new ArgumentException("Invalid CustomerId. CustomerId must be a positive integer.");
+                }
+                var customer = await _customerRepository.GetCustomerByIdAsync(request.CustomerId.Value);
+                if (customer == null)
+                {
+                    throw new KeyNotFoundException(
+                        $"Customer with ID {request.CustomerId.Value} not found.");
+                }
+
+
+                if (!customer.IsActive)
+                {
+                    throw new InvalidOperationException("Cannot create a user for an inactive customer.");
+                }
+
+
+            }
+            else
+            {
+                if (request.CustomerId.HasValue)
+                {
+                    throw new ArgumentException(
+                        "Internal users cannot have a CustomerId.");
+                }
+            }
+            var hashedPassword = _passwordHasher.HashPassword(request.Password);
 
             var newUser = new User
             {
@@ -41,11 +78,13 @@ namespace OpsFlow.Application.Users.CreateUser
                 CreatedAt = DateTime.UtcNow,
                 Role = request.Role,
                 IsActive = true,
-                CustomerId = null
+                CustomerId = request.Role == UserRoles.Customer
+               ? request.CustomerId
+               : null
             };
 
-           await _userRepository.AddAsync(newUser);
-           await _userRepository.SaveChangesAsync();
+            await _userRepository.AddAsync(newUser);
+            await _userRepository.SaveChangesAsync();
 
             return new UserResponse
             {
@@ -56,7 +95,8 @@ namespace OpsFlow.Application.Users.CreateUser
                 Phone = newUser.Phone,
                 Role = newUser.Role,
                 IsActive = newUser.IsActive,
-                CreatedAt = newUser.CreatedAt
+                CreatedAt = newUser.CreatedAt,
+                CustomerId = newUser.CustomerId
             };
         }
     }

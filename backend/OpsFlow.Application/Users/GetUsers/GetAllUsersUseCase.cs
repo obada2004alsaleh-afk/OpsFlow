@@ -26,7 +26,8 @@ namespace OpsFlow.Application.Users.GetUsers
                 Phone = u.Phone,
                 Role = u.Role,
                 IsActive = u.IsActive,
-                CreatedAt = u.CreatedAt
+                CreatedAt = u.CreatedAt,
+                CustomerId = u.CustomerId
 
 
             }).ToList();

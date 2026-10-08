@@ -13,12 +13,18 @@ namespace OpsFlow.Infrastructure.Database
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Site> Sites { get; set; }
+        public DbSet<Asset> Assets { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-               
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new SiteConfiguration());
+            modelBuilder.ApplyConfiguration(new AssetConfiguration());
         }
     }
 }

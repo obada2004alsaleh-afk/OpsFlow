@@ -17,5 +17,7 @@
         public bool IsActive { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public int? CustomerId { get; set; }
     }
 }

@@ -17,6 +17,12 @@ namespace OpsFlow.Infrastructure.Configurations
             builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(500);
             builder.Property(u => u.Role).IsRequired().HasMaxLength(30);
 
+
+            builder.HasOne(u => u.Customer)
+                   .WithMany(c => c.Users)
+                   .HasForeignKey(u => u.CustomerId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }
