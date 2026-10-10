@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OpsFlow.Domain.Entities;
 using OpsFlow.Infrastructure.Configurations;
+using OpsFlow.Infrastructure.EntityConfigurations;
 
 namespace OpsFlow.Infrastructure.Database
 {
@@ -16,8 +17,7 @@ namespace OpsFlow.Infrastructure.Database
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<Asset> Assets { get; set; }
-
-
+        public DbSet<Ticket> Tickets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,7 @@ namespace OpsFlow.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new SiteConfiguration());
             modelBuilder.ApplyConfiguration(new AssetConfiguration());
+            modelBuilder.ApplyConfiguration(new TicketConfiguration());
         }
     }
 }

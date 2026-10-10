@@ -14,5 +14,7 @@ namespace OpsFlow.Domain.Entities
 
         public DateTime CreatedAt { get; set; }
 
+        public ICollection<Ticket> Tickets { get; set; } = []; //navigation property to Ticket entity
+
     }
 }

@@ -25,5 +25,7 @@ namespace OpsFlow.Domain.Entities
         public int CustomerId { get; set; }
         public Customer? Customer { get; set; } //navigation property to Customer entity
 
+        public ICollection<Ticket> Tickets { get; set; } = []; //navigation property to Ticket entity
+
     }
 }
