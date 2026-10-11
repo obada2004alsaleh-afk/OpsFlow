@@ -10,5 +10,7 @@ namespace OpsFlow.Application.Interfaces
         Task<List<Ticket>> GetAllAsync();
         Task AddAsync(Ticket ticket);
         Task SaveChangesAsync();
+        Task<List<Ticket>> GetByCustomerIdAsync(int customerId);
+
     }
 }

@@ -38,5 +38,13 @@ namespace OpsFlow.Infrastructure.Repositories
             await _opsFlowDbContext.SaveChangesAsync();
         }
 
+        public async Task<List<Ticket>> GetByCustomerIdAsync(int customerId)
+        {
+            return await _opsFlowDbContext.Tickets
+                .Where(ticket => ticket.Site.CustomerId == customerId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
     }
 }
