@@ -30,6 +30,6 @@ namespace OpsFlow.Domain.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-
+        public ICollection<Assignment> Assignments { get; set; } = [];
     }
 }

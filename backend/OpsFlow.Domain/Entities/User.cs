@@ -1,5 +1,7 @@
 ﻿
 
+using OpsFlow.Domain.Constants;
+
 namespace OpsFlow.Domain.Entities
 {
     public class User
@@ -27,7 +29,9 @@ namespace OpsFlow.Domain.Entities
 
         public ICollection<Ticket> Tickets { get; set; } = []; //navigation property to Ticket entity
 
+        public TechnicianProfile? TechnicalProfile { get; set; }
 
+        public ICollection<Assignment> Assignments { get; set; } = [];
 
     }
 }

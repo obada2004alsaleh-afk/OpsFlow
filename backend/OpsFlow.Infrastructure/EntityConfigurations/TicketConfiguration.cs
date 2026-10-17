@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OpsFlow.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace OpsFlow.Infrastructure.EntityConfigurations
+namespace OpsFlow.Infrastructure.Configurations
 {
     public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
     {

@@ -51,6 +51,42 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.ToTable("Assets");
                 });
 
+            modelBuilder.Entity("OpsFlow.Domain.Entities.Assignment", b =>
+                {
+                    b.Property<int>("AssignmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssignmentId"));
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AssignedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TechnicalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AssignmentId");
+
+                    b.HasIndex("AssignedByUserId");
+
+                    b.HasIndex("TechnicalId");
+
+                    b.HasIndex("TicketId")
+                        .IsUnique()
+                        .HasFilter("[IsActive] = 1");
+
+                    b.ToTable("Assignments");
+                });
+
             modelBuilder.Entity("OpsFlow.Domain.Entities.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -127,6 +163,33 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Sites");
+                });
+
+            modelBuilder.Entity("OpsFlow.Domain.Entities.TechnicianProfile", b =>
+                {
+                    b.Property<int>("TechnicalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TechnicalId"));
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TechnicalId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("TechnicianProfiles");
                 });
 
             modelBuilder.Entity("OpsFlow.Domain.Entities.Ticket", b =>
@@ -252,6 +315,33 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Site");
                 });
 
+            modelBuilder.Entity("OpsFlow.Domain.Entities.Assignment", b =>
+                {
+                    b.HasOne("OpsFlow.Domain.Entities.User", "AssignedByUser")
+                        .WithMany("Assignments")
+                        .HasForeignKey("AssignedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OpsFlow.Domain.Entities.TechnicianProfile", "TechnicianProfile")
+                        .WithMany("Assignments")
+                        .HasForeignKey("TechnicalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OpsFlow.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("Assignments")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedByUser");
+
+                    b.Navigation("TechnicianProfile");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("OpsFlow.Domain.Entities.Site", b =>
                 {
                     b.HasOne("OpsFlow.Domain.Entities.Customer", "Customer")
@@ -261,6 +351,17 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("OpsFlow.Domain.Entities.TechnicianProfile", b =>
+                {
+                    b.HasOne("OpsFlow.Domain.Entities.User", "User")
+                        .WithOne("TechnicalProfile")
+                        .HasForeignKey("OpsFlow.Domain.Entities.TechnicianProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OpsFlow.Domain.Entities.Ticket", b =>
@@ -318,8 +419,22 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Tickets");
                 });
 
+            modelBuilder.Entity("OpsFlow.Domain.Entities.TechnicianProfile", b =>
+                {
+                    b.Navigation("Assignments");
+                });
+
+            modelBuilder.Entity("OpsFlow.Domain.Entities.Ticket", b =>
+                {
+                    b.Navigation("Assignments");
+                });
+
             modelBuilder.Entity("OpsFlow.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Assignments");
+
+                    b.Navigation("TechnicalProfile");
+
                     b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618

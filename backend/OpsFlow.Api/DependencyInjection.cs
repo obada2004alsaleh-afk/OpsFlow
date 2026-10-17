@@ -3,6 +3,7 @@ using OpsFlow.Application.Assets.CreateAsset;
 using OpsFlow.Application.Assets.GetAllAssets;
 using OpsFlow.Application.Assets.GetAssetById;
 using OpsFlow.Application.Assets.UpdateAsset;
+using OpsFlow.Application.Assignment.AssignTicket;
 using OpsFlow.Application.Authentication.Login;
 using OpsFlow.Application.Customers.CreateCustomer;
 using OpsFlow.Application.Customers.GetAllCustomers;
@@ -13,6 +14,7 @@ using OpsFlow.Application.Sites.CreateSite;
 using OpsFlow.Application.Sites.GetAll;
 using OpsFlow.Application.Sites.GetById;
 using OpsFlow.Application.Sites.UpdateSite;
+using OpsFlow.Application.TechnicianProfileRepository.AssignTicket;
 using OpsFlow.Application.Tickets.CreateTicket;
 using OpsFlow.Application.Tickets.GetAll;
 using OpsFlow.Application.Tickets.GetById;
@@ -35,6 +37,8 @@ namespace OpsFlow.Api
             services.AddScoped<ISiteRepository, SiteRepository>();
             services.AddScoped<IAssetRepository, AssetRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<ITechnicianProfileRepository, TechnicianProfileRepository>();
+            services.AddScoped<IAssignmentRepository, AssignmentRepository>();
             services.AddScoped<LoginUseCase>();
             services.AddScoped<CreateUserUseCase>();
             services.AddScoped<GetAllUsersUseCase>();
@@ -54,6 +58,8 @@ namespace OpsFlow.Api
             services.AddScoped<CreateTicketUseCase>();
             services.AddScoped<GetAllTicketsUseCase>();
             services.AddScoped<GetTicketByIdUseCase>();
+            services.AddScoped<TechnicianProfileUseCase>();
+            services.AddScoped<AssignTicketUseCase>();
             return services;
         }
     }

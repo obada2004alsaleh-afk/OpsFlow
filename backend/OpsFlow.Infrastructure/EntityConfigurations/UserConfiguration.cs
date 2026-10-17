@@ -22,6 +22,13 @@ namespace OpsFlow.Infrastructure.Configurations
                    .WithMany(c => c.Users)
                    .HasForeignKey(u => u.CustomerId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.HasOne(u=>u.TechnicalProfile)
+                  .WithOne(a=>a.User)
+                  .HasForeignKey<TechnicianProfile>(u => u.UserId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
         }
 
     }

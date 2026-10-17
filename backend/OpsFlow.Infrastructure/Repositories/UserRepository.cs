@@ -29,7 +29,7 @@ namespace OpsFlow.Infrastructure.Repositories
 
         public async Task<User?> GetByUserIdAsync(int UserId)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+            return await _dbContext.Users.Include(u=>u.TechnicalProfile).FirstOrDefaultAsync(u => u.UserId == UserId);
         }
 
         public async Task SaveChangesAsync()
