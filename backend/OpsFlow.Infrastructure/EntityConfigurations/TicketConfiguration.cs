@@ -14,6 +14,7 @@ namespace OpsFlow.Infrastructure.Configurations
             builder.Property(t => t.Title)
                    .IsRequired()
                    .HasMaxLength(200);
+
             builder.Property(t => t.Description)
                    .IsRequired()
                    .HasMaxLength(1000);

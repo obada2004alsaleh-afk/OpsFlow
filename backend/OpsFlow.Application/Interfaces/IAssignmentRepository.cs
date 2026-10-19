@@ -10,9 +10,11 @@ namespace OpsFlow.Application.Interfaces
 
         public Task<AssignmentEntity?> GetActiveByTicketIdAsync(int id);
 
-       public Task SaveAssignmentAsync(
-         AssignmentEntity? activeAssignment,
-         AssignmentEntity newAssignment);
+        Task SaveAssignmentAsync(
+      AssignmentEntity? activeAssignment,
+      AssignmentEntity newAssignment,
+      Ticket ticket,
+      TicketStatusHistory? statusHistory);
 
         public Task SaveChangesAsync();
     }

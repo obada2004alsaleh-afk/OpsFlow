@@ -17,8 +17,10 @@ namespace OpsFlow.Infrastructure.Repositories
 
         public async Task<Assignment?> GetActiveByTicketIdAsync(int ticketId)
         {
-            var response = await _opsFlowDbContext.Assignments.FirstOrDefaultAsync(u => u.TicketId == ticketId && u.IsActive);
-            return response;
+            return await _opsFlowDbContext.Assignments
+                .Include(a => a.TechnicianProfile)
+                .FirstOrDefaultAsync(a =>
+                    a.TicketId == ticketId && a.IsActive);
         }
 
         public async Task AddAssignmentAsync(Assignment assignment)
@@ -26,19 +28,31 @@ namespace OpsFlow.Infrastructure.Repositories
             await _opsFlowDbContext.Assignments.AddAsync(assignment);
         }
 
-        public async Task SaveAssignmentAsync(Assignment? activeAssignment, Assignment newAssignment)
+        public async Task SaveAssignmentAsync(
+      Assignment? activeAssignment,
+      Assignment newAssignment,
+      Ticket ticket,
+      TicketStatusHistory? statusHistory)
         {
             await using var transaction =
-            await _opsFlowDbContext.Database.BeginTransactionAsync();
+                await _opsFlowDbContext.Database.BeginTransactionAsync();
 
             if (activeAssignment != null)
             {
+                // The old assignment was deactivated in the UseCase.
                 await _opsFlowDbContext.SaveChangesAsync();
             }
 
-
-
             await _opsFlowDbContext.Assignments.AddAsync(newAssignment);
+
+            if (statusHistory != null)
+            {
+                ticket.Status = statusHistory.ToStatus;
+
+                await _opsFlowDbContext.TicketStatusHistories
+                    .AddAsync(statusHistory);
+            }
+
             await _opsFlowDbContext.SaveChangesAsync();
 
             await transaction.CommitAsync();

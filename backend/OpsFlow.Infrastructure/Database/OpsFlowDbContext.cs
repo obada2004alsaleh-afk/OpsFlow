@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OpsFlow.Domain.Entities;
 using OpsFlow.Infrastructure.Configurations;
+using OpsFlow.Infrastructure.EntityConfigurations;
 
 namespace OpsFlow.Infrastructure.Database
 {
@@ -19,7 +20,7 @@ namespace OpsFlow.Infrastructure.Database
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TechnicianProfile> TechnicianProfiles { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
-
+        public DbSet<TicketStatusHistory> TicketStatusHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
@@ -29,6 +30,7 @@ namespace OpsFlow.Infrastructure.Database
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TechnicianProfileConfiguration());
             modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
+            modelBuilder.ApplyConfiguration(new TicketStatusHistoryConfiguration());
         }
     }
 }

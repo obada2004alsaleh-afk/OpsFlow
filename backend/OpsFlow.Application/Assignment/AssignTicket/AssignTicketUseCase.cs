@@ -94,7 +94,22 @@ namespace OpsFlow.Application.Assignment.AssignTicket
                 }
                 activeAssignment.IsActive = false;
             }
+            TicketStatusHistory? statusHistory = null;
 
+            if (activeAssignment == null &&
+                (ticket.Status == TicketStatuses.New ||
+                 ticket.Status == TicketStatuses.Reopened))
+            {
+                statusHistory = new TicketStatusHistory
+                {
+                    TicketId = ticket.TicketId,
+                    FromStatus = ticket.Status,
+                    ToStatus = TicketStatuses.Assigned,
+                    ChangedByUserId = user.UserId,
+                    ChangedAt = DateTime.UtcNow,
+                    Reason = null
+                };
+            }
             var assignment = new OpsFlow.Domain.Entities.Assignment
             {
                 TicketId = request.TicketId,
@@ -106,8 +121,11 @@ namespace OpsFlow.Application.Assignment.AssignTicket
 
             };
 
-
-            await _assignmentRepository.SaveAssignmentAsync(activeAssignment, assignment);
+            await _assignmentRepository.SaveAssignmentAsync(
+                activeAssignment,
+                assignment,
+                ticket,
+                statusHistory);
 
             return new AssignTicketResponse
             {

@@ -248,6 +248,46 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("OpsFlow.Domain.Entities.TicketStatusHistory", b =>
+                {
+                    b.Property<int>("TicketStatusHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketStatusHistoryId"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ChangedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("TicketStatusHistoryId");
+
+                    b.HasIndex("ChangedByUserId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketStatusHistories");
+                });
+
             modelBuilder.Entity("OpsFlow.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -390,6 +430,25 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Site");
                 });
 
+            modelBuilder.Entity("OpsFlow.Domain.Entities.TicketStatusHistory", b =>
+                {
+                    b.HasOne("OpsFlow.Domain.Entities.User", "ChangedByUser")
+                        .WithMany("TicketStatusHistories")
+                        .HasForeignKey("ChangedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OpsFlow.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("TicketStatusHistories")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ChangedByUser");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("OpsFlow.Domain.Entities.User", b =>
                 {
                     b.HasOne("OpsFlow.Domain.Entities.Customer", "Customer")
@@ -427,6 +486,8 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("OpsFlow.Domain.Entities.Ticket", b =>
                 {
                     b.Navigation("Assignments");
+
+                    b.Navigation("TicketStatusHistories");
                 });
 
             modelBuilder.Entity("OpsFlow.Domain.Entities.User", b =>
@@ -434,6 +495,8 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("TechnicalProfile");
+
+                    b.Navigation("TicketStatusHistories");
 
                     b.Navigation("Tickets");
                 });

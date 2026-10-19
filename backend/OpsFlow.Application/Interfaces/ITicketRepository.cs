@@ -1,5 +1,5 @@
 ﻿
-
+using AssignmentEntity = OpsFlow.Domain.Entities.Assignment;
 using OpsFlow.Domain.Entities;
 
 namespace OpsFlow.Application.Interfaces
@@ -11,6 +11,9 @@ namespace OpsFlow.Application.Interfaces
         Task AddAsync(Ticket ticket);
         Task SaveChangesAsync();
         Task<List<Ticket>> GetByCustomerIdAsync(int customerId);
-
+        Task SaveStatusChangeAsync(
+             Ticket ticket,
+              TicketStatusHistory history,
+              AssignmentEntity? assignmentToDeactivate);
     }
 }

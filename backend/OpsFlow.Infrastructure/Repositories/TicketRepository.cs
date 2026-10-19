@@ -1,5 +1,5 @@
 ﻿
-
+using AssignmentEntity = OpsFlow.Domain.Entities.Assignment;
 using Microsoft.EntityFrameworkCore;
 using OpsFlow.Application.Interfaces;
 using OpsFlow.Domain.Entities;
@@ -44,6 +44,27 @@ namespace OpsFlow.Infrastructure.Repositories
                 .Where(ticket => ticket.Site.CustomerId == customerId)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+        public async Task SaveStatusChangeAsync(
+      Ticket ticket,
+      TicketStatusHistory history,
+      AssignmentEntity? assignmentToDeactivate)
+        {
+            await using var transaction =
+                await _opsFlowDbContext.Database.BeginTransactionAsync();
+
+            ticket.Status = history.ToStatus;
+
+            if (assignmentToDeactivate != null)
+            {
+                assignmentToDeactivate.IsActive = false;
+            }
+
+            await _opsFlowDbContext.TicketStatusHistories.AddAsync(history);
+
+            await _opsFlowDbContext.SaveChangesAsync();
+
+            await transaction.CommitAsync();
         }
 
     }

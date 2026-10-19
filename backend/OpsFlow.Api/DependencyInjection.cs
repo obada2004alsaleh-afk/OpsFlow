@@ -5,6 +5,7 @@ using OpsFlow.Application.Assets.GetAssetById;
 using OpsFlow.Application.Assets.UpdateAsset;
 using OpsFlow.Application.Assignment.AssignTicket;
 using OpsFlow.Application.Authentication.Login;
+using OpsFlow.Application.ChangeTicketStatus;
 using OpsFlow.Application.Customers.CreateCustomer;
 using OpsFlow.Application.Customers.GetAllCustomers;
 using OpsFlow.Application.Customers.GetCustomerById;
@@ -60,6 +61,7 @@ namespace OpsFlow.Api
             services.AddScoped<GetTicketByIdUseCase>();
             services.AddScoped<TechnicianProfileUseCase>();
             services.AddScoped<AssignTicketUseCase>();
+            services.AddScoped<ChangeTicketStatusUseCase>();
             return services;
         }
     }

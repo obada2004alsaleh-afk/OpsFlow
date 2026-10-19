@@ -33,5 +33,7 @@ namespace OpsFlow.Domain.Entities
 
         public ICollection<Assignment> Assignments { get; set; } = [];
 
+        public ICollection<TicketStatusHistory> TicketStatusHistories { get; set; } = [];
+
     }
 }
