@@ -1,5 +1,6 @@
 ﻿
 
+using System.Text.Json.Serialization;
 
 namespace OpsFlow.Application.Tickets.Request_response
 {
@@ -8,8 +9,10 @@ namespace OpsFlow.Application.Tickets.Request_response
         public int TicketId { get; set; }
 
         public string Title { get; set; } = string.Empty;
-
         public string Description { get; set; } = string.Empty;
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? WorkNotes { get; set; }
 
         public string Category { get; set; } = string.Empty;
 
@@ -26,10 +29,10 @@ namespace OpsFlow.Application.Tickets.Request_response
 
         public int CreatedByUserId { get; set; }
 
-        public DateTime CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; }
 
 
-    
+
 
     }
 }

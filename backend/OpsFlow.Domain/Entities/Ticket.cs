@@ -19,7 +19,7 @@ namespace OpsFlow.Domain.Entities
         public int SiteId { get; set; }
 
         public  Site Site { get; set; } = null!;
-
+        public string? WorkNotes { get; set; }
         public int? AssetId { get; set; }
 
         public Asset? Asset { get; set; }

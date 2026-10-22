@@ -98,7 +98,12 @@ namespace OpsFlow.Application.Tickets.GetById
                 SiteId = ticket.SiteId,
                 AssetId = ticket.AssetId,
                 CreatedByUserId = ticket.CreatedByUserId,
-                CreatedAt = ticket.CreatedAt
+                CreatedAt = ticket.CreatedAt,
+                WorkNotes =
+                user.Role == UserRoles.Admin ||
+                user.Role == UserRoles.Manager
+                ? ticket.WorkNotes
+                 : null
             };
         }
     }

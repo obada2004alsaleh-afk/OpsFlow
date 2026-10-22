@@ -16,6 +16,7 @@ using OpsFlow.Application.Sites.GetAll;
 using OpsFlow.Application.Sites.GetById;
 using OpsFlow.Application.Sites.UpdateSite;
 using OpsFlow.Application.TechnicianProfileRepository.AssignTicket;
+using OpsFlow.Application.Tickets.AddTicketWorkNote;
 using OpsFlow.Application.Tickets.CreateTicket;
 using OpsFlow.Application.Tickets.GetAll;
 using OpsFlow.Application.Tickets.GetById;
@@ -62,6 +63,7 @@ namespace OpsFlow.Api
             services.AddScoped<TechnicianProfileUseCase>();
             services.AddScoped<AssignTicketUseCase>();
             services.AddScoped<ChangeTicketStatusUseCase>();
+            services.AddScoped<AddTicketWorkNoteUseCase>();
             return services;
         }
     }

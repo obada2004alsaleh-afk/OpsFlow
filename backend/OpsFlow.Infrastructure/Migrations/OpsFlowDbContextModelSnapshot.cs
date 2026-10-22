@@ -237,6 +237,9 @@ namespace OpsFlow.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("WorkNotes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("TicketId");
 
                     b.HasIndex("AssetId");

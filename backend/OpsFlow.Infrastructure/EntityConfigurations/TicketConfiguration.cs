@@ -27,6 +27,10 @@ namespace OpsFlow.Infrastructure.Configurations
             builder.Property(t => t.Status)
                    .IsRequired()
                    .HasMaxLength(50);
+            builder.Property(t => t.WorkNotes)
+                   .HasColumnType("nvarchar(max)");
+
+
 
             builder.HasOne(t => t.Site)
                    .WithMany(s => s.Tickets)
