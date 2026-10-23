@@ -14,6 +14,16 @@ builder.Services.AddOpsFlowServices();
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var jwtSecretKey = builder.Configuration["Jwt:SecretKey"];
 
 if (string.IsNullOrWhiteSpace(jwtSecretKey))
@@ -59,10 +69,15 @@ var app = builder.Build();
 
 
 
+app.UseRouting();
+
+app.UseCors("ReactDev");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 //model binding loginRequest from the request body and injecting LoginUseCase from DI container
 app.MapPost("/api/auth/login",
     async (LoginRequest loginRequest, LoginUseCase loginUseCase) =>
