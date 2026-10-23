@@ -1,6 +1,8 @@
+import AppRoute from "./routes/AppRoutes"
 function App() {
+
   return (
-    <h1>OpsFlow</h1>
+    <AppRoute />
   )
 }
 
